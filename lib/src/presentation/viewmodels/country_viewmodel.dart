@@ -10,31 +10,29 @@ class CountryViewModel extends ChangeNotifier {
   String? _errorMessage;
   Country? _lastUpdatedCountry;
 
-  // Getters para que la Vista consuma
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   Country? get lastUpdatedCountry => _lastUpdatedCountry;
 
-  // Inyección del Caso de Uso por constructor
   CountryViewModel({required RefreshWidgetUseCase refreshWidgetUseCase})
       : _refreshWidgetUseCase = refreshWidgetUseCase;
 
   Future<void> refreshWidget() async {
     _isLoading = true;
     _errorMessage = null;
-    notifyListeners(); // Notifica a la UI que muestre el "loading"
+    notifyListeners();
 
     try {
-      // Nota: Asumimos que tu UseCase ahora retorna el Country para mostrarlo en la app
-      // Si tu UseCase era void, modifícalo para que retorne Future<Country>
-      final country = await _refreshWidgetUseCase.call(); 
+      final country = await _refreshWidgetUseCase.call();
+      // final country = Country(name: 'Ecuador', capital: 'Quito', flagUrl: 'url');
       
       _lastUpdatedCountry = country;
     } catch (e) {
+      print(e);
       _errorMessage = "No se pudo actualizar el widget: $e";
     } finally {
       _isLoading = false;
-      notifyListeners(); // Notifica a la UI que terminó (éxito o error)
+      notifyListeners();
     }
   }
 }
